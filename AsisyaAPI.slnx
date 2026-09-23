@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="src/AsisyaApi.Api/AsisyaApi.Api.csproj" />
+  <Project Path="src/AsisyaApi.Application/AsisyaApi.Application.csproj" />
+  <Project Path="src/AsisyaApi.Domain/AsisyaApi.Domain.csproj" />
+  <Project Path="src/AsisyaApi.Infrastructure/AsisyaApi.Infrastructure.csproj" />
+  <Project Path="tests/AsisyaApi.IntegrationTests/AsisyaApi.IntegrationTests.csproj" />
+  <Project Path="tests/AsisyaApi.UnitTests/AsisyaApi.UnitTests.csproj" />
+</Solution>
