@@ -1,0 +1,40 @@
+# Uso: cp .env.example .env  (y edita los valores)  &&  docker compose up --build
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: asisya
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d asisya"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=asisya;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}
+      # Secretos: se leen del archivo .env (no versionado). Compose falla si faltan.
+      Jwt__Key: ${JWT_KEY:?Define JWT_KEY en .env (mínimo 32 caracteres)}
+      SeedAdmin__Username: ${ADMIN_USER:-admin}
+      SeedAdmin__Password: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD en .env}
+      Cors__AllowedOrigins__0: http://localhost:5173
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:

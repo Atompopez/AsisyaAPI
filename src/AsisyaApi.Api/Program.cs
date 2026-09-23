@@ -2,6 +2,8 @@ using AsisyaApi.Api.Extensions;
 using AsisyaApi.Api.Middleware;
 using AsisyaApi.Application;
 using AsisyaApi.Infrastructure;
+using AsisyaApi.Infrastructure.Auth;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,9 @@ builder.Services.AddCors(options => options.AddPolicy(FrontendCorsPolicy, policy
         .AllowAnyMethod()));
 
 var app = builder.Build();
+
+// Falla de inmediato si falta el secreto JWT, antes de tocar la base de datos.
+_ = app.Services.GetRequiredService<IOptions<JwtOptions>>().Value;
 
 // Esquema de BD mediante EF Core Migrations, aplicadas al arrancar (nunca EnsureCreated).
 await app.ApplyMigrationsAsync();
