@@ -1,6 +1,37 @@
-@AsisyaApi.Api_HostAddress = http://localhost:5152
+@host = http://localhost:5152
+# Pega aquí el token devuelto por el login
+@token =
 
-GET {{AsisyaApi.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "username": "admin", "password": "Admin123!" }
 
 ###
+POST {{host}}/Category
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "SERVIDORES", "photoUrl": "https://picsum.photos/seed/servidores/400/300" }
+
+###
+POST {{host}}/Product
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "name": "Servidor Dell R740", "description": "2x Xeon, 256GB RAM", "price": 8500.50, "stock": 4, "categoryId": 1 }
+
+###
+POST {{host}}/Product/bulk
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "count": 100000 }
+
+###
+GET {{host}}/Products?page=1&pageSize=20&search=servidor&sortBy=price_desc
+Authorization: Bearer {{token}}
+
+###
+GET {{host}}/Products/1
+Authorization: Bearer {{token}}
